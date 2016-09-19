@@ -41,12 +41,22 @@ function getAll(location) {
 
 module.exports = getFiles;
 
-module.exports.getFiles = function (location) {
+module.exports.getFiles = function (location, options) {
     var location = path.resolve(location);
-    return getFiles(location);
+    var content = getFiles(location);
+
+    if(options && options.filter) {
+        content = content.filter(options.filter);
+    }
+    return content;
 };
 
-module.exports.getAll = function (location) {
+module.exports.getAll = function (location, options) {
     var location = path.resolve(location);
-    return getAll(location);
+    var content = getAll(location);
+
+    if(options && options.filter) {
+        content = content.filter(options.filter);
+    }
+    return content;
 };
