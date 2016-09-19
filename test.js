@@ -1,11 +1,11 @@
 var locationModule = require("./locationContent");
-var content = locationModule.getFiles("./scripts");
+content = locationModule.getFiles("./scripts");
 console.log(content);
 var content = locationModule.getAll("./scripts");
 console.log(content);
 
-var content = locationModule.getAll("./scripts", {
-
+content = locationModule.getAll("./scripts", {
+    filter: e => e.indexOf("sub_3") > 0
 });
 console.log(content);
 
