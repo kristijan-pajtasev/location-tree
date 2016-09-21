@@ -48,6 +48,8 @@ module.exports.getFiles = function (location, options) {
     if(options && options.filter) {
         content = content.filter(options.filter);
     }
+
+    content = content.map(e => e.replace(location + "/", ""));
     return content;
 };
 
@@ -58,5 +60,7 @@ module.exports.getAll = function (location, options) {
     if(options && options.filter) {
         content = content.filter(options.filter);
     }
+
+    content = content.map(e => e.replace(location + "/", ""));
     return content;
 };
