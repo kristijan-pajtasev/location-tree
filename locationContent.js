@@ -54,6 +54,7 @@ module.exports.getFiles = function (location, options) {
 };
 
 module.exports.getAll = function (location, options) {
+    var originalLocation = location
     var location = path.resolve(location);
     var content = getAll(location);
 
@@ -61,6 +62,8 @@ module.exports.getAll = function (location, options) {
         content = content.filter(options.filter);
     }
 
-    content = content.map(e => e.replace(location + "/", ""));
+
+    // relative path
+    content = content.map(e => e.replace(location + "/", originalLocation));
     return content;
 };
