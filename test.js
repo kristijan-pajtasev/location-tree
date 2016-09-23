@@ -4,12 +4,14 @@ content = locationModule.getFiles("./");
 var content = locationModule.getAll("./scripts");
 //console.log(content);
 
-content = locationModule.getAll("../", {
-    filter: e => e.indexOf(".js") > 0
+content = locationModule.getAll("./", {
+    filter: e => e.indexOf(".js") > 0,
+    useRelative: true
 });
 
+console.log("filename");
 console.log(content[0]);
-console.log(content.length);
+//console.log(content.length);
 //console.log(content);
 
 //console.log(process.argv.slice(2))

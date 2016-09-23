@@ -42,28 +42,37 @@ function getAll(location) {
 module.exports = getFiles;
 
 module.exports.getFiles = function (location, options) {
-    var location = path.resolve(location);
-    var content = getFiles(location);
+    var locationPath = path.resolve(location);
+    var content = getFiles(locationPath);
 
     if(options && options.filter) {
         content = content.filter(options.filter);
     }
 
-    content = content.map(e => e.replace(location + "/", ""));
+    if(options && options.useRelative) {
+        if(location == "./") { location = "."; }
+        content = content.map(p => p.replace(__dirname, location));
+    }
+
+    content = content.map(e => e.replace(locationPath + "/", ""));
     return content;
 };
 
 module.exports.getAll = function (location, options) {
-    var originalLocation = location
-    var location = path.resolve(location);
-    var content = getAll(location);
+    var locationPath = path.resolve(location);
+    var content = getAll(locationPath);
 
     if(options && options.filter) {
         content = content.filter(options.filter);
     }
 
+    if(options && options.useRelative) {
+        if(location == "./") { location = "."; }
+        content = content.map(p => p.replace(__dirname, location));
+    }
+
 
     // relative path
-    content = content.map(e => e.replace(location + "/", originalLocation));
+    //content = content.map(e => e.replace(location + "/", originalLocation));
     return content;
 };
