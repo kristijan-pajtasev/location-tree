@@ -1,38 +1,53 @@
 var fs = require("fs");
 var path = require("path");
 
-function getFiles(location) {
+function filterIgnored(content, ignoredPaths) {
+    return content.filter(p => {
+        var keepFile = true;
+        ignoredPaths.forEach(ignored => {
+            if(path.resolve(p).startsWith(ignored)) {
+                keepFile = false
+            }
+        });
+        return keepFile;
+    })
+}
+
+function getFiles(location, ignorePaths) {
     var content = fs.readdirSync(location);
+    content = filterIgnored(content.map(e => `${location}/${e}`), ignorePaths);
+
     var dirs = [];
     var files = content
         .filter(c => {
-            if(fs.statSync(`${location}/${c}`).isFile()) {
+            if(fs.statSync(`${c}`).isFile()) {
                 return true;
             } else {
-                dirs.push(`${location}/${c}`);
+                dirs.push(`${c}`);
                 return false
             }
         })
-        .map(c => `${location}/${c}` );
+        .map(c => `${c}` );
 
 
     dirs.forEach(dir =>
-        files = files.concat(getFiles(dir)));
+        files = files.concat(getFiles(dir, ignorePaths)));
 
     return files;
 }
 
 
 
-function getAll(location) {
+function getAll(location, ignorePaths) {
     var content = fs.readdirSync(location);
     var allContent = content.map(e => `${location}/${e}`);
+    allContent = filterIgnored(allContent, ignorePaths);
 
     content
         .filter(c => fs.statSync(`${location}/${c}`).isDirectory())
         .map(dir => `${location}/${dir}` )
         .forEach(dir => {
-            allContent = allContent.concat(getAll(dir))
+            allContent = allContent.concat(getAll(dir, ignorePaths))
         });
 
 
@@ -43,7 +58,11 @@ module.exports = getFiles;
 
 module.exports.getFiles = function (location, options) {
     var locationPath = path.resolve(location);
-    var content = getFiles(locationPath);
+    var ignorePaths = [];
+    if(options && options.ignore) {
+        ignorePaths = options.ignore.map(e => path.resolve(e));
+    }
+    var content = getFiles(locationPath, ignorePaths);
 
     if(options && options.filter) {
         content = content.filter(options.filter);
@@ -60,7 +79,11 @@ module.exports.getFiles = function (location, options) {
 
 module.exports.getAll = function (location, options) {
     var locationPath = path.resolve(location);
-    var content = getAll(locationPath);
+    var ignorePaths = [];
+    if(options && options.ignore) {
+        ignorePaths = options.ignore.map(e => path.resolve(e));
+    }
+    var content = getAll(locationPath, ignorePaths);
 
     if(options && options.filter) {
         content = content.filter(options.filter);
@@ -71,8 +94,5 @@ module.exports.getAll = function (location, options) {
         content = content.map(p => p.replace(__dirname, location));
     }
 
-
-    // relative path
-    //content = content.map(e => e.replace(location + "/", originalLocation));
     return content;
 };

@@ -1,16 +1,17 @@
 var locationModule = require("./locationContent");
-content = locationModule.getFiles("./");
+//content = locationModule.getFiles("./");
 //console.log(content);
-var content = locationModule.getAll("./scripts");
+//var content = locationModule.getAll("./scripts");
 //console.log(content);
 
 content = locationModule.getAll("./", {
     filter: e => e.indexOf(".js") > 0,
-    useRelative: true
+    useRelative: true,
+    ignore: ["./scripts/sub"]
 });
 
 console.log("filename");
-console.log(content[0]);
+console.log(content);
 //console.log(content.length);
 //console.log(content);
 
@@ -19,6 +20,3 @@ console.log(content[0]);
 var path = require("path");
 //console.log(__dirname)
 //console.log(path.normalize(__dirname))
-
-// todo cleanup
-// todo ignore paths
